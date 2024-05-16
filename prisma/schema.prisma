@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PLANTED_CROP_TYPES {
+  SOYA
+  CORN
+  COTTON
+  COFFEE
+  SUGAR_CANE
+}
+
+model PlantedCrop {
+    id            Int       @id @default(autoincrement())
+    name  String
+    type PLANTED_CROP_TYPES
+    farmerId  Int
+    farmer   Farmer @relation(fields: [farmerId], references: [id])
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+}
+
+model Farmer {
+    id            Int       @id @default(autoincrement())
+    docNumber  String   @unique
+    name   String
+    farmName  String
+    city  String?
+    state  String?
+    totalArea  Int?
+    arableArea  Int?
+    vegetationArea  Int?
+    plantedCrops PlantedCrop[]
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+}
